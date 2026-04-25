@@ -1,9 +1,6 @@
-# Project Zen
+# Project Zen Android Agent
 
-Monorepo dla projektu Project Zen. Repozytorium jest podzielone na dwa główne moduły:
-
-- `webapp` - aplikacja webowa.
-- `android_agent` - komponent/agencja dla Androida.
+Branch `android_agent` zawiera część Android projektu Project Zen.
 
 ## Struktura
 
@@ -11,35 +8,26 @@ Monorepo dla projektu Project Zen. Repozytorium jest podzielone na dwa główne 
 .
 ├── android_agent/
 │   └── README.md
-├── webapp/
-│   └── README.md
 └── README.md
 ```
 
-## Moduły
-
-### Webapp
-
-Kod aplikacji webowej powinien znajdować się w katalogu `webapp`. Szczegółowe informacje dotyczące instalacji, konfiguracji, uruchamiania i testów są opisane w [webapp/README.md](webapp/README.md).
-
-### Android Agent
+## Moduł
 
 Kod komponentu Android powinien znajdować się w katalogu `android_agent`. Szczegółowe informacje dotyczące środowiska, budowania, uruchamiania i testów są opisane w [android_agent/README.md](android_agent/README.md).
 
 ## Wymagania
 
-Wymagania zależą od konkretnego modułu. Przed rozpoczęciem pracy sprawdź README w odpowiednim katalogu:
+Wymagania zależą od wybranego sposobu konfiguracji projektu Android. Przed rozpoczęciem pracy sprawdź README modułu:
 
-- [webapp/README.md](webapp/README.md)
 - [android_agent/README.md](android_agent/README.md)
 
 ## Konfiguracja
 
-Pliki konfiguracyjne i zmienne środowiskowe powinny być dokumentowane lokalnie przy module, którego dotyczą. Jeśli projekt będzie używał sekretów lub konfiguracji środowiskowej, dodaj przykładowy plik `.env.example` w odpowiednim katalogu.
+Pliki konfiguracyjne i zmienne środowiskowe powinny być dokumentowane w katalogu `android_agent`. Jeśli projekt będzie używał sekretów lub konfiguracji środowiskowej, dodaj przykładowy plik `.env.example` albo `local.properties.example`.
 
 ## Praca nad projektem
 
-1. Wejdź do katalogu modułu, nad którym pracujesz.
+1. Wejdź do katalogu `android_agent`.
 2. Zainstaluj zależności zgodnie z README modułu.
 3. Skonfiguruj wymagane zmienne środowiskowe.
 4. Uruchom aplikację lub testy lokalnie.
