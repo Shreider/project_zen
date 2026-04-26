@@ -1,79 +1,91 @@
 # Android Agent
 
-Komponent Android projektu project_zen.
+Katalog `android/` jest miejscem na przyszły komponent Android Agent projektu `project_zen`.
 
-## Cel modułu
+Agent ma działać jako element **Realtime Android Environment Management** i komunikować się z backendem webowym. Zakładany model wdrożenia opiera się na oficjalnych mechanizmach Android Enterprise, przede wszystkim Device Owner / Device Policy Controller oraz managed mode.
 
-Ten katalog jest przeznaczony na kod agenta Androida, konfigurację projektu mobilnego, testy oraz dokumentację budowania i uruchamiania.
+## Aktualny status
+
+Moduł Android nie jest jeszcze zaimplementowany. W katalogu znajduje się tylko dokumentacja startowa. Po dodaniu projektu Android należy uzupełnić tu realne komendy Gradle, warianty buildów, konfigurację SDK i instrukcje provisioning.
 
 ## Planowana struktura
 
 ```text
-android_agent/
+android/
 ├── README.md
 ├── app/
 ├── gradle/
+├── gradlew
+├── gradlew.bat
 ├── build.gradle.kts
 └── settings.gradle.kts
 ```
 
-Rzeczywista struktura może się różnić w zależności od wybranego sposobu konfiguracji projektu Android.
+Rzeczywista struktura może się różnić w zależności od wersji Android Gradle Plugin i sposobu wygenerowania projektu.
 
-## Wymagania
+## Zakres planowanego agenta
 
-Uzupełnij po dodaniu projektu Android, np.:
+- rejestracja urządzenia w backendzie,
+- cykliczny heartbeat z baterią, siecią, wersją Androida i wersją aplikacji,
+- odbieranie komend administracyjnych z backendu,
+- raportowanie wyniku wykonania komend,
+- działanie w managed mode na urządzeniach organizacji,
+- integracja z DevicePolicyManager tam, gdzie jest to zgodne z oficjalnym modelem Android Enterprise.
 
-- Android Studio
-- JDK zgodny z używaną wersją Android Gradle Plugin
-- Android SDK
-- Gradle albo Gradle Wrapper
+## Wymagania po dodaniu projektu
+
+Po utworzeniu projektu Android należy udokumentować konkretne wersje:
+
+- Android Studio,
+- JDK,
+- Android Gradle Plugin,
+- Gradle Wrapper,
+- Android SDK,
+- minimalny i docelowy poziom API.
 
 ## Konfiguracja środowiska
 
-Przed uruchomieniem projektu upewnij się, że:
+Typowe wymagania lokalne:
 
-- Android SDK jest zainstalowany.
-- `ANDROID_HOME` albo `ANDROID_SDK_ROOT` wskazuje katalog SDK.
-- Emulator lub fizyczne urządzenie Android jest dostępne.
+```bash
+export ANDROID_HOME=/path/to/android/sdk
+export ANDROID_SDK_ROOT=/path/to/android/sdk
+```
 
-## Budowanie
+Do uruchomienia będzie potrzebny emulator lub fizyczne urządzenie Android. Dla scenariuszy Device Owner należy przygotować osobną procedurę provisioning, ponieważ zwykła instalacja debug nie daje aplikacji uprawnień właściciela urządzenia.
 
-Po dodaniu Gradle Wrappera standardowa komenda buildu może wyglądać tak:
+## Planowane komendy
+
+Po dodaniu Gradle Wrappera typowe komendy mogą wyglądać tak:
 
 ```bash
 ./gradlew assembleDebug
-```
-
-## Uruchamianie
-
-Po skonfigurowaniu aplikacji można uruchomić wariant debug na urządzeniu lub emulatorze, np.:
-
-```bash
 ./gradlew installDebug
-```
-
-## Testy
-
-Po dodaniu testów dokumentuj tutaj właściwe komendy, np.:
-
-```bash
 ./gradlew test
-```
-
-Testy instrumentacyjne mogą być uruchamiane przykładowo:
-
-```bash
 ./gradlew connectedAndroidTest
 ```
 
-## Konfiguracja
+Te komendy są orientacyjne. Należy je zweryfikować po dodaniu realnego projektu Android.
 
-Jeśli agent wymaga kluczy API, adresów serwerów lub innej konfiguracji, dodaj bezpieczny mechanizm konfiguracji i przykładowy plik, np. `local.properties.example` albo `.env.example`.
+## Integracja z backendem
 
-Nie commituj sekretów, tokenów ani lokalnych plików konfiguracyjnych.
+Backend webowy udostępnia endpointy dla agenta pod prefiksem:
 
-## Notatki developerskie
+```text
+/api/agent
+```
 
-- Uzupełnij tę dokumentację po dodaniu właściwego projektu Android.
-- Opisz wymagane uprawnienia Androida, jeśli agent będzie ich używał.
-- Dokumentuj zależności od backendu, webapp lub zewnętrznych usług.
+Planowane przepływy:
+
+- `POST /api/agent/enroll` - przygotowanie rejestracji urządzenia,
+- `POST /api/agent/heartbeat` - raport stanu urządzenia,
+- `GET /api/agent/commands/pull` - pobieranie komend,
+- `POST /api/agent/commands/:id/result` - wynik wykonania komendy,
+- `POST /api/agent/events` - zdarzenia diagnostyczne.
+
+## Zasady bezpieczeństwa
+
+- Agent powinien działać wyłącznie na urządzeniach organizacji lub urządzeniach testowych.
+- Nie należy implementować funkcji ukrywania aplikacji, obchodzenia zgód użytkownika ani przejmowania prywatnych urządzeń.
+- Sekrety, tokeny enrollment i dane środowiskowe muszą być trzymane poza repozytorium.
+- Wszystkie mechanizmy zarządzania urządzeniem powinny korzystać z oficjalnych API Android Enterprise.
