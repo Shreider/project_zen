@@ -1,49 +1,60 @@
-# Project Zen
+# project_zen
 
-Monorepo dla projektu Project Zen. Repozytorium jest podzielone na dwa główne moduły:
+Repozytorium projektu **project_zen / Realtime Android Environment Management**.
 
-- `webapp` - aplikacja webowa.
-- `android_agent` - komponent/agencja dla Androida.
+Docelowy podział katalogów:
+
+- `web/` - część webowa: panel administracyjny, backend API, PostgreSQL/Prisma, WebSocket, Docker Compose, dokumentacja web/backend.
+- `android/` - część Android: przyszły Android Agent Device Owner / managed mode.
+
+## Aktualny cel
+
+Zgodnie z `.TASK` obecnie wykonywana jest część web. Android nie jest jeszcze implementowany poza utrzymaniem właściwego katalogu `android/` i dokumentacji startowej.
 
 ## Struktura
 
 ```text
 .
-├── android_agent/
+├── android/
 │   └── README.md
-├── webapp/
+├── web/
+│   ├── apps/
+│   │   ├── backend/
+│   │   └── frontend/
+│   ├── packages/
+│   │   └── shared/
+│   ├── docker/
+│   ├── docker-compose.yml
+│   ├── package.json
 │   └── README.md
+├── .gitignore
 └── README.md
 ```
 
-## Moduły
+## Zakres web
 
-### Webapp
+W katalogu `web/` powstaje demonstracyjny system project_zen:
 
-Kod aplikacji webowej powinien znajdować się w katalogu `webapp`. Szczegółowe informacje dotyczące instalacji, konfiguracji, uruchamiania i testów są opisane w [webapp/README.md](webapp/README.md).
+- frontend Next.js App Router,
+- backend Node.js/TypeScript,
+- PostgreSQL,
+- Prisma ORM,
+- WebSocket realtime,
+- JWT i role użytkowników,
+- audyt,
+- kolejka komend,
+- seed danych testowych,
+- Docker Compose,
+- dokumentacja po polsku.
 
-### Android Agent
+## Zakres Android
 
-Kod komponentu Android powinien znajdować się w katalogu `android_agent`. Szczegółowe informacje dotyczące środowiska, budowania, uruchamiania i testów są opisane w [android_agent/README.md](android_agent/README.md).
+Katalog `android/` jest przeznaczony na przyszły moduł Android Agent korzystający z oficjalnych mechanizmów Android Enterprise:
 
-## Wymagania
+- Device Owner,
+- DevicePolicyManager,
+- DeviceAdminReceiver,
+- Lock Task Mode,
+- Dedicated Device / managed mode.
 
-Wymagania zależą od konkretnego modułu. Przed rozpoczęciem pracy sprawdź README w odpowiednim katalogu:
-
-- [webapp/README.md](webapp/README.md)
-- [android_agent/README.md](android_agent/README.md)
-
-## Konfiguracja
-
-Pliki konfiguracyjne i zmienne środowiskowe powinny być dokumentowane lokalnie przy module, którego dotyczą. Jeśli projekt będzie używał sekretów lub konfiguracji środowiskowej, dodaj przykładowy plik `.env.example` w odpowiednim katalogu.
-
-## Praca nad projektem
-
-1. Wejdź do katalogu modułu, nad którym pracujesz.
-2. Zainstaluj zależności zgodnie z README modułu.
-3. Skonfiguruj wymagane zmienne środowiskowe.
-4. Uruchom aplikację lub testy lokalnie.
-
-## Status
-
-Repozytorium zawiera obecnie strukturę startową. Szczegółowe komendy instalacji, uruchamiania i testowania należy uzupełnić po dodaniu właściwego stacku technologicznego.
+Projekt nie służy do ukrywania aplikacji, obchodzenia zabezpieczeń Androida ani przejmowania prywatnych telefonów.

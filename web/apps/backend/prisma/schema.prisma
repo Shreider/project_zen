@@ -1,0 +1,189 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPERADMIN
+  ADMIN
+  VIEWER
+}
+
+enum DeviceStatus {
+  ONLINE
+  OFFLINE
+  UNKNOWN
+}
+
+enum CommandType {
+  ENABLE_MANAGED_MODE
+  DISABLE_MANAGED_MODE
+  CHANGE_TARGET_URL
+  REQUEST_HEARTBEAT
+  SHOW_ADMIN_MESSAGE
+  LOCK_DEVICE
+  REBOOT_DEVICE
+  WIPE_DEVICE
+}
+
+enum CommandStatus {
+  PENDING
+  PICKED
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+enum EventSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  passwordHash  String
+  role          UserRole       @default(VIEWER)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+  commands      Command[]      @relation("CommandCreatedBy")
+
+  @@map("users")
+}
+
+model Device {
+  id                  String            @id @default(uuid())
+  deviceUuid          String            @unique
+  name                String
+  model               String
+  manufacturer        String
+  androidVersion      String
+  appVersion          String
+  enrollmentTokenHash String?
+  status              DeviceStatus      @default(UNKNOWN)
+  batteryLevel        Int               @default(0)
+  charging            Boolean           @default(false)
+  networkType         String            @default("UNKNOWN")
+  managedModeEnabled        Boolean           @default(false)
+  lastSeenAt          DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  heartbeats          DeviceHeartbeat[]
+  commands            Command[]
+  events              DeviceEvent[]
+  agentTokens         AgentToken[]
+
+  @@index([deviceUuid])
+  @@index([status])
+  @@index([lastSeenAt])
+  @@map("devices")
+}
+
+model DeviceHeartbeat {
+  id           String   @id @default(uuid())
+  deviceId     String
+  batteryLevel Int
+  charging     Boolean
+  networkType  String
+  managedModeEnabled Boolean
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+  device       Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@index([createdAt])
+  @@map("device_heartbeats")
+}
+
+model Command {
+  id              String        @id @default(uuid())
+  deviceId        String
+  type            CommandType
+  payloadJson     Json?
+  status          CommandStatus @default(PENDING)
+  resultJson      Json?
+  errorMessage    String?
+  createdByUserId String?
+  createdAt       DateTime      @default(now())
+  pickedAt        DateTime?
+  executedAt      DateTime?
+  device          Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  createdBy       User?         @relation("CommandCreatedBy", fields: [createdByUserId], references: [id])
+
+  @@index([deviceId])
+  @@index([status])
+  @@map("commands")
+}
+
+model Policy {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  configJson  Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("policies")
+}
+
+model DeviceEvent {
+  id           String        @id @default(uuid())
+  deviceId     String
+  severity     EventSeverity @default(INFO)
+  eventType    String
+  message      String
+  metadataJson Json?
+  createdAt    DateTime      @default(now())
+  device       Device        @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@index([createdAt])
+  @@map("device_events")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  userId       String?
+  action       String
+  targetType   String
+  targetId     String?
+  metadataJson Json?
+  createdAt    DateTime @default(now())
+  user         User?    @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+model AgentToken {
+  id        String    @id @default(uuid())
+  deviceId  String
+  tokenHash String
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  device    Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([deviceId])
+  @@map("agent_tokens")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}

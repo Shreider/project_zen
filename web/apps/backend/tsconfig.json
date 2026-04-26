@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "types": ["node"],
+    "noEmit": false,
+    "paths": {
+      "@project_zen/shared": ["../../packages/shared/dist/index.d.ts"],
+      "@project_zen/shared/*": ["../../packages/shared/dist/*"]
+    }
+  },
+  "include": ["src", "prisma/seed.ts"]
+}

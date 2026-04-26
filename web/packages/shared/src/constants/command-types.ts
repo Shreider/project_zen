@@ -1,0 +1,11 @@
+export const COMMAND_TYPES = [
+  "ENABLE_MANAGED_MODE",
+  "DISABLE_MANAGED_MODE",
+  "CHANGE_TARGET_URL",
+  "REQUEST_HEARTBEAT",
+  "SHOW_ADMIN_MESSAGE",
+  "LOCK_DEVICE",
+  "REBOOT_DEVICE",
+  "WIPE_DEVICE"
+] as const;
+export type CommandType = (typeof COMMAND_TYPES)[number];

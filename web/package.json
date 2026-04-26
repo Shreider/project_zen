@@ -1,0 +1,22 @@
+{
+  "name": "project_zen",
+  "private": true,
+  "version": "0.1.0",
+  "description": "project_zen / Realtime Android Environment Management - web MVP",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @project_zen/backend & npm run dev -w @project_zen/frontend",
+    "build": "npm run build -w @project_zen/shared && npm run build -w @project_zen/backend && npm run build -w @project_zen/frontend",
+    "lint": "npm run lint -w @project_zen/frontend && npm run lint -w @project_zen/backend",
+    "typecheck": "npm run typecheck -w @project_zen/shared && npm run typecheck -w @project_zen/backend && npm run typecheck -w @project_zen/frontend",
+    "db:generate": "npm run db:generate -w @project_zen/backend",
+    "db:migrate": "npm run db:migrate -w @project_zen/backend",
+    "db:seed": "npm run db:seed -w @project_zen/backend"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

@@ -1,6 +1,6 @@
 # Android Agent
 
-Komponent Android projektu Project Zen.
+Komponent Android projektu project_zen.
 
 ## Cel modułu
 
